@@ -3,36 +3,44 @@
  */
 
 import { call, put, select, takeLatest } from 'redux-saga/effects';
-import { LOAD_REPOS } from 'containers/App/constants';
-import { reposLoaded, repoLoadingError } from 'containers/App/actions';
+import {
+  setWeatherData,
+  setWeatherError,
+  setWeatherDetail,
+} from 'containers/HomePage/actions';
 
 import request from 'utils/request';
-import { makeSelectUsername } from 'containers/HomePage/selectors';
+import { makeSetSearchItem, makeGetWoeid } from 'containers/HomePage/selectors';
+import { GET_WEATHER_DATA, GET_WEATHER_DETAIL } from './constants';
 
-/**
- * Github repos request/response handler
- */
-export function* getRepos() {
-  // Select username from store
-  const username = yield select(makeSelectUsername());
-  const requestURL = `https://api.github.com/users/${username}/repos?type=all&sort=updated`;
+export function* getWeatherData() {
+  const searchItem = yield select(makeSetSearchItem());
+  const requestURL = `getWeatherSearch/${searchItem}`;
 
   try {
-    // Call our request helper (see 'utils/request')
-    const repos = yield call(request, requestURL);
-    yield put(reposLoaded(repos, username));
+    const weatherItems = yield call(request, requestURL);
+    yield put(setWeatherData(weatherItems));
   } catch (err) {
-    yield put(repoLoadingError(err));
+    yield put(setWeatherError(err));
+  }
+}
+
+export function* getWeatherDetail() {
+  const woeid = yield select(makeGetWoeid());
+  const requestURL = `getWeatherDetail/${woeid}`;
+
+  try {
+    const weatherDetailValue = yield call(request, requestURL);
+    yield put(setWeatherDetail(weatherDetailValue[0]));
+  } catch (err) {
+    yield put(setWeatherError(err));
   }
 }
 
 /**
  * Root saga manages watcher lifecycle
  */
-export default function* githubData() {
-  // Watches for LOAD_REPOS actions and calls getRepos when one comes in.
-  // By using `takeLatest` only the result of the latest API call is applied.
-  // It returns task descriptor (just like fork) so we can continue execution
-  // It will be cancelled automatically on component unmount
-  yield takeLatest(LOAD_REPOS, getRepos);
+export default function* weatherData() {
+  yield takeLatest(GET_WEATHER_DATA, getWeatherData);
+  yield takeLatest(GET_WEATHER_DETAIL, getWeatherDetail);
 }

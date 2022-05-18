@@ -1,32 +1,57 @@
-/*
- * Home Actions
- *
- * Actions change things in your application
- * Since this boilerplate uses a uni-directional data flow, specifically redux,
- * we have these actions which are the only way your application interacts with
- * your application state. This guarantees that your state is up to date and nobody
- * messes it up weirdly somewhere.
- *
- * To add a new Action:
- * 1) Import your constant
- * 2) Add a function like this:
- *    export function yourAction(var) {
- *        return { type: YOUR_ACTION_CONSTANT, var: var }
- *    }
- */
+import {
+  CHANGE_SEARCH_TERM,
+  CHANGE_WOEID,
+  GET_WEATHER_DATA,
+  SET_WEATHER_DATA,
+  SET_WEATHER_DETAIL,
+  GET_WEATHER_DETAIL,
+} from './constants';
 
-import { CHANGE_USERNAME } from './constants';
-
-/**
- * Changes the input field of the form
- *
- * @param  {string} username The new text of the input field
- *
- * @return {object} An action object with a type of CHANGE_USERNAME
- */
-export function changeUsername(username) {
+export function changeSearchTerm(searchTerm) {
   return {
-    type: CHANGE_USERNAME,
-    username,
+    type: CHANGE_SEARCH_TERM,
+    searchTerm,
+  };
+}
+
+export function changeWoeid(woeid) {
+  return {
+    type: CHANGE_WOEID,
+    woeid,
+  };
+}
+
+export function getWeatherData(searchTerm) {
+  return {
+    type: GET_WEATHER_DATA,
+    searchTerm,
+  };
+}
+
+export function getWeatherDetail(woeid) {
+  return {
+    type: GET_WEATHER_DETAIL,
+    woeid,
+  };
+}
+
+export function setWeatherData(weatherData) {
+  return {
+    type: SET_WEATHER_DATA,
+    weatherData,
+  };
+}
+
+export function setWeatherDetail(weatherDetail) {
+  return {
+    type: SET_WEATHER_DETAIL,
+    weatherDetail,
+  };
+}
+
+export function setWeatherError(weatherError) {
+  return {
+    type: SET_WEATHER_DATA,
+    weatherError,
   };
 }

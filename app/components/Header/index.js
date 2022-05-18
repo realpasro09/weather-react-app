@@ -1,28 +1,42 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
-import { FormattedMessage } from 'react-intl';
+import { Input } from 'antd';
+import styled from 'styled-components';
+import 'antd/dist/antd.css'; // or 'antd/dist/antd.less'
+const { Search } = Input;
 
-import A from './A';
-import Img from './Img';
-import NavBar from './NavBar';
-import HeaderLink from './HeaderLink';
-import Banner from './banner.jpg';
-import messages from './messages';
+const HeaderWrapper = styled.div`
+  height: 200px;
+  background-color: #f7ca5a;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  width: 100%;
+`;
 
-function Header() {
+const SearchTitle = styled.div`
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
+`;
+
+function Header({ searchTerm, onChangeCallback, onSearchCallback }) {
   return (
-    <div>
-      <A href="https://www.reactboilerplate.com/">
-        <Img src={Banner} alt="react-boilerplate - Logo" />
-      </A>
-      <NavBar>
-        <HeaderLink to="/">
-          <FormattedMessage {...messages.home} />
-        </HeaderLink>
-        <HeaderLink to="/features">
-          <FormattedMessage {...messages.features} />
-        </HeaderLink>
-      </NavBar>
-    </div>
+    <HeaderWrapper>
+      <SearchTitle>How is the Weather?</SearchTitle>
+      <Search
+        value={searchTerm}
+        style={{ width: 400 }}
+        placeholder="Search by city name"
+        enterButton="GO"
+        size="large"
+        onChange={onChangeCallback}
+        onSearch={onSearchCallback}
+      />
+    </HeaderWrapper>
   );
 }
 

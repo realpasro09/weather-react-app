@@ -1,3 +1,7 @@
+/* eslint-disable no-console */
+/* eslint-disable func-names */
+const axios = require('axios').default;
+
 /**
  * Parses the JSON returned by a network request
  *
@@ -29,6 +33,24 @@ function checkStatus(response) {
   throw error;
 }
 
+export function axiosRequest(url) {
+  axios
+    .get(url, {
+      headers: { 'Access-Control-Allow-Origin': '*', crossDomain: true },
+    })
+    .then(function(response) {
+      // handle success
+      console.log(response);
+    })
+    .catch(function(error) {
+      // handle error
+      console.log(error);
+    })
+    .then(function() {
+      // always executed
+    });
+}
+
 /**
  * Requests a URL, returning a promise
  *
@@ -37,8 +59,10 @@ function checkStatus(response) {
  *
  * @return {object}           The response data
  */
-export default function request(url, options) {
-  return fetch(url, options)
+export default function request(url) {
+  return fetch(url, {
+    mode: 'no-cors',
+  })
     .then(checkStatus)
     .then(parseJSON);
 }

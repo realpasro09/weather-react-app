@@ -1,3 +1,5 @@
+/* eslint-disable func-names */
+/* eslint-disable no-console */
 /* eslint consistent-return:0 import/order:0 */
 
 const express = require('express');
@@ -5,6 +7,7 @@ const logger = require('./logger');
 
 const argv = require('./argv');
 const port = require('./port');
+const axios = require('axios');
 const setup = require('./middlewares/frontendMiddleware');
 const isDev = process.env.NODE_ENV !== 'production';
 const ngrok =
@@ -12,11 +15,40 @@ const ngrok =
     ? require('ngrok')
     : false;
 const { resolve } = require('path');
+const cors = require('cors');
 const app = express();
 
 // If you need a backend, e.g. an API, add your custom backend-specific middleware here
-// app.use('/api', myApi);
-
+app.use(cors());
+app.get('/getWeatherSearch/:searchTerm', (req, res) => {
+  axios
+    .get(
+      `http://metaweather.com/api/location/search/?query=${
+        req.params.searchTerm
+      }`,
+      {
+        headers: { 'Access-Control-Allow-Origin': '*' },
+      },
+    )
+    .then(function(response) {
+      res.status(200).send(response.data);
+    });
+});
+app.get('/getWeatherDetail/:woeid', (req, res) => {
+  const { woeid } = req.params;
+  const d = new Date();
+  const month = d.getMonth() + 1;
+  axios
+    .get(
+      `http://metaweather.com/api/location/${woeid}/${d.getFullYear()}/${month}/${d.getDate()}`,
+      {
+        headers: { 'Access-Control-Allow-Origin': '*' },
+      },
+    )
+    .then(function(response) {
+      res.status(200).send(response.data);
+    });
+});
 // In production we need to pass these values in instead of relying on webpack
 setup(app, {
   outputPath: resolve(process.cwd(), 'build'),
